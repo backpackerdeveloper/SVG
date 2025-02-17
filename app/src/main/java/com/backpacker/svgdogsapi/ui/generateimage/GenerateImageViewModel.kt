@@ -12,19 +12,23 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GenerateImageViewModel @Inject constructor(private val repository: ImagesRepository) : ViewModel(){
+class GenerateImageViewModel @Inject constructor(private val repository: ImagesRepository) : ViewModel() {
 
     private val _dogImageFlow = MutableStateFlow<DogImage?>(null)
     val dogImageFlow: StateFlow<DogImage?> get() = _dogImageFlow
 
+    private val _loadingState = MutableStateFlow(false)
+    val loadingState: StateFlow<Boolean> get() = _loadingState
+
     fun generateDogImage() {
+        _loadingState.value = true
         viewModelScope.launch {
             val dogImage = repository.fetchRandomImage()
+            _loadingState.value = false
             if (dogImage != null) {
                 ImageCache.getInstance().addImage(dogImage)
                 _dogImageFlow.value = dogImage
             }
         }
     }
-
 }
