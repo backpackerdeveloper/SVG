@@ -18,7 +18,6 @@ interface DogImageDao {
     @Query("DELETE FROM recent_images")
     suspend fun clearAllImages()
 
-    // No arguments needed for this query
     @Query("DELETE FROM recent_images WHERE rowid NOT IN (SELECT rowid FROM recent_images ORDER BY rowid DESC LIMIT 20)")
     suspend fun deleteOldestImages()
 }
